@@ -1,0 +1,28 @@
+{
+  "name": "traind-back_end",
+  "version": "1.0.0",
+  "description": "Express, MongoDB, and Node components of the TRAIND project",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SODV3999-TRAIND/TRAIND-Back_End.git"
+  },
+  "author": "Michael Persson",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/SODV3999-TRAIND/TRAIND-Back_End/issues"
+  },
+  "homepage": "https://github.com/SODV3999-TRAIND/TRAIND-Back_End#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.11.15"
+  },
+  "devDependencies": {
+    "eslint": "^7.19.0",
+    "nodemon": "^2.0.7"
+  }
+}
