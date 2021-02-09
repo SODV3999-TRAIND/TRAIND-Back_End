@@ -1,12 +1,27 @@
-const mongoose = require("mongoose");
+const { ObjectID } = require("mongodb");
+const mdb = require("./index");
 
-const clientSchema = new mongoose.Schema({
-  firstName: String,
-  lastName: String,
-  phoneNumber: String,
-  email: String,
-});
+function newClient(givenName, familyName, email, telephone, callback) {
+  mdb.get().collection("clients").insertOne(
+    {
+      givenName: givenName,
+      familyName: familyName,
+      email: email,
+      telephone: telephone,
+    },
+    callback
+  );
+}
 
-const Client = mongoose.model("client", clientSchema);
+function getClient(clientID, callback) {
+  mdb
+    .get()
+    .collection("clients")
+    .findOne(
+      { _id: ObjectID(clientID) },
+      { givenName: 1, familyName: 1 },
+      callback
+    );
+}
 
-module.exports = Client;
+module.exports = { getClient, newClient };

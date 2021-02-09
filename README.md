@@ -19,3 +19,7 @@ npm pkg "http-errors" is used for creating HTTP errors.
 
 Errors from the Mongoose framework are captured using the callback (err, result)
 Errors are created at the callback and propogated up to server.js using next(err)
+
+## Database
+
+The connection to the database is via the MongoDB Client.
