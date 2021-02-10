@@ -1,27 +1,24 @@
-const mongoose = require("mongoose");
+const { ObjectID } = require("mongodb");
+const mdb = require("./index");
+// TODO: Add express-validator.
+// TODO: Add code to pass db errors to the router.
 
-const eventSchema = new mongoose.Schema({
-  attendee: mongoose.ObjectId,
-  startDate: Date,
-  endDate: Date,
-  organizer: mongoose.ObjectId,
-  location: { latitude: Number, longitude: Number },
-});
+function newEvent(attendee, startDate, endDate, organizer, location, callback) {
+  mdb
+    .get()
+    .collection("events")
+    .insertOne(
+      {
+        // TODO: Add checking to make sure the organizer and attendee actually exist.
+        organizer: ObjectID(organizer),
+        attendee: ObjectID(attendee),
+        // TODO: Add iso-datestring-validator for startDate and endDate
+        startDate: startDate,
+        endDate: endDate,
+        location: location,
+      },
+      callback
+    );
+}
 
-/*
-eventSchema.method("validateTime", function () {
-  const trainer = this.organizer;
-  const attendee = this.attendee;
-  event.findById(trainer, "startDate", (err, date) => {
-    if (err) {
-      console.log("Event Error");
-    } else {
-      console.log(date.toString());
-    }
-  });
-});
-*/
-
-const event = mongoose.model("event", eventSchema);
-
-module.exports = event;
+module.exports = { newEvent };
