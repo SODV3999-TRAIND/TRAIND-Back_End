@@ -1,5 +1,7 @@
 const { ObjectID } = require("mongodb");
 const mdb = require("./index");
+// TODO: Add express-validator.
+// TODO: Add code to pass db errors to the router.
 
 function newClient(givenName, familyName, email, telephone, callback) {
   mdb.get().collection("clients").insertOne(

@@ -23,4 +23,28 @@ router.post("/book", (req, res) => {
   );
 });
 
+router.get("/trainer/:trainerId", (req, res) => {
+  const trainerId = req.params.trainerId;
+  event.getTrainerEvents(trainerId, (err, results) => {
+    if (err) {
+      // TODO: Add more robust error handling
+      console.log("Error getting trainer events");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
+router.get("/client/:clientId", (req, res) => {
+  const clientId = req.params.clientId;
+  event.getClientEvents(clientId, (err, results) => {
+    if (err) {
+      // TODO: Add more robust error handling
+      console.log("Error getting client events");
+    } else {
+      res.json(results);
+    }
+  });
+});
+
 module.exports = router;

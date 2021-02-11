@@ -21,4 +21,24 @@ function newEvent(attendee, startDate, endDate, organizer, location, callback) {
     );
 }
 
-module.exports = { newEvent };
+function getTrainerEvents(trainerId, callback) {
+  mdb
+    .get()
+    .collection("events")
+    .find({ organizer: ObjectID(trainerId) })
+    .toArray((err, events) => {
+      callback(err, events);
+    });
+}
+
+function getClientEvents(clientId, callback) {
+  mdb
+    .get()
+    .collection("events")
+    .find({ attendee: ObjectID(clientId) })
+    .toArray((err, events) => {
+      callback(err, events);
+    });
+}
+
+module.exports = { newEvent, getTrainerEvents, getClientEvents };
