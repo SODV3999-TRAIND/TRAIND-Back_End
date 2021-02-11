@@ -1,11 +1,12 @@
 module.exports = {
   parserOptions: {
-    ecmaVersion: 6,
+    ecmaVersion: 8,
     sourceType: "module",
   },
   env: {
     node: true,
-    es6: true,
+    es2017: true,
+    mongodb: true,
   },
   extends: "eslint:recommended",
   rules: {
