@@ -1,5 +1,7 @@
 const { ObjectID } = require("mongodb");
 const mdb = require("./index");
+const addWeeks = require("date-fns/addWeeks");
+
 // TODO: Add express-validator.
 // TODO: Add code to pass db errors to the router.
 
@@ -31,6 +33,23 @@ function getTrainerEvents(trainerId, callback) {
     });
 }
 
+async function getTrainerEventsforFourWks(trainerId) {
+  const curDate = new Date(new Date().setHours(0, 0, 0));
+  const fourWks = addWeeks(curDate, 4);
+  const cursor = await mdb
+    .get()
+    .collection("events")
+    .find({
+      organizer: ObjectID(trainerId),
+      startDate: {
+        $gte: curDate,
+        $lt: fourWks,
+      },
+    });
+  const events = await cursor.toArray();
+  return events;
+}
+
 function getClientEvents(clientId, callback) {
   mdb
     .get()
@@ -41,4 +60,28 @@ function getClientEvents(clientId, callback) {
     });
 }
 
-module.exports = { newEvent, getTrainerEvents, getClientEvents };
+// Going to try using async/await for this request.
+async function getClientEventsforFourWks(clientId) {
+  const curDate = new Date(new Date().setHours(0, 0, 0));
+  const fourWks = addWeeks(curDate, 4);
+  const cursor = await mdb
+    .get()
+    .collection("events")
+    .find({
+      attendee: ObjectID(clientId),
+      startDate: {
+        $gte: curDate,
+        $lt: fourWks,
+      },
+    });
+  const events = await cursor.toArray();
+  return events;
+}
+
+module.exports = {
+  newEvent,
+  getTrainerEvents,
+  getClientEvents,
+  getClientEventsforFourWks,
+  getTrainerEventsforFourWks,
+};

@@ -35,6 +35,16 @@ router.get("/trainer/:trainerId", (req, res) => {
   });
 });
 
+router.get("/trainer/:trainerId/fourWksSchedule", async (req, res) => {
+  const trainerId = req.params.trainerId;
+  const events = await event.getTrainerEventsforFourWks(trainerId);
+  if (events.length <= 0) {
+    res.send("No events");
+  } else {
+    res.json(events);
+  }
+});
+
 router.get("/client/:clientId", (req, res) => {
   const clientId = req.params.clientId;
   event.getClientEvents(clientId, (err, results) => {
@@ -45,6 +55,16 @@ router.get("/client/:clientId", (req, res) => {
       res.json(results);
     }
   });
+});
+
+router.get("/client/:clientId/fourWksSchedule", async (req, res) => {
+  const clientId = req.params.clientId;
+  const events = await event.getClientEventsforFourWks(clientId);
+  if (events.length <= 0) {
+    res.send("No events");
+  } else {
+    res.json(events);
+  }
 });
 
 module.exports = router;
