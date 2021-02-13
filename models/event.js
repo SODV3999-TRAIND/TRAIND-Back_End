@@ -40,6 +40,10 @@ async function getTrainerEventsforFourWks(trainerId) {
   const fourWks = addWeeks(curDate, 4);
 
   try {
+    if (!ObjectID.isValid(trainerId)) {
+      // TODO: Added custom error handling for mal-formed ObjectID
+      throw error;
+    }
     const cursor = await mdb
       .get()
       .collection("events")
@@ -53,6 +57,7 @@ async function getTrainerEventsforFourWks(trainerId) {
     const events = await cursor.toArray();
     return events;
   } catch (error) {
+    // TODO: Add more robust error handling here.
     console.log("getTrainerEventsForFourWks Error");
   }
 }
@@ -68,12 +73,15 @@ function getClientEvents(clientId, callback) {
     });
 }
 
-// Going to try using async/await for this request.
 async function getClientEventsforFourWks(clientId) {
   const curDate = new Date(new Date().setHours(0, 0, 0));
   const fourWks = addWeeks(curDate, 4);
 
   try {
+    if (!ObjectID.isValid(clientId)) {
+      // TODO: Added custom error handling for mal-formed ObjectID
+      throw error;
+    }
     const cursor = await mdb
       .get()
       .collection("events")
@@ -87,6 +95,7 @@ async function getClientEventsforFourWks(clientId) {
     const events = await cursor.toArray();
     return events;
   } catch (error) {
+    // TODO: Add more robust error handling here.
     console.log("getClientEventsForFourWks Error");
   }
 }

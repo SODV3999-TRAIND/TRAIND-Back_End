@@ -37,11 +37,16 @@ router.get("/trainer/:trainerId", (req, res) => {
 
 router.get("/trainer/:trainerId/fourWksSchedule", async (req, res) => {
   const trainerId = req.params.trainerId;
-  const events = await event.getTrainerEventsforFourWks(trainerId);
-  if (events.length <= 0) {
-    res.send("No events");
-  } else {
-    res.json(events);
+  try {
+    const events = await event.getTrainerEventsforFourWks(trainerId);
+    if (events == null || events.length <= 0) {
+      res.send("No events");
+    } else {
+      res.json(events);
+    }
+  } catch (error) {
+    console.log("getTrainerEventsForFourWks Routing Error");
+    res.status(400).json({ message: "Malformed ObjectID" });
   }
 });
 
@@ -59,11 +64,16 @@ router.get("/client/:clientId", (req, res) => {
 
 router.get("/client/:clientId/fourWksSchedule", async (req, res) => {
   const clientId = req.params.clientId;
-  const events = await event.getClientEventsforFourWks(clientId);
-  if (events.length <= 0) {
-    res.send("No events");
-  } else {
-    res.json(events);
+  try {
+    const events = await event.getClientEventsforFourWks(clientId);
+    if (events == null || events.length <= 0) {
+      res.send("No events");
+    } else {
+      res.json(events);
+    }
+  } catch (error) {
+    console.log("getClientEventsForFourWks Routing Error");
+    res.status(400).json({ message: "Malformed ObjectID" });
   }
 });
 
