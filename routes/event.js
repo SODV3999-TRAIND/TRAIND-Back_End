@@ -46,7 +46,7 @@ router.get("/trainer/:trainerId/fourWksSchedule", async (req, res) => {
     }
   } catch (error) {
     console.log("getTrainerEventsForFourWks Routing Error");
-    res.status(400).json({ message: "Malformed ObjectID" });
+    res.status(error.httpCode).json({ message: error.message });
   }
 });
 
