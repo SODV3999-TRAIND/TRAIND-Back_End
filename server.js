@@ -14,10 +14,15 @@ app.use(bodyParser.json());
 
 app.use("/router", router);
 
+app.all("*", (req, res, next) => {
+  // TODO: Look at adding custom error handling here.
+  next(err);
+});
+
 app.use((err, req, res, next) => {
   const status = err.status || 500;
   const message = err.message || "Internal Server Error";
-  res.status(status).send(message);
+  res.status(status).json(message);
 });
 
 app.listen(port, () => {
