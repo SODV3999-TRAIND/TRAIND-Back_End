@@ -5,6 +5,7 @@ const addWeeks = require("date-fns/addWeeks");
 // TODO: Add express-validator.
 // TODO: Add code to pass db errors to the router.
 
+// TODO: Convert to async/await
 function newEvent(attendee, startDate, endDate, organizer, location, callback) {
   mdb
     .get()
@@ -23,6 +24,7 @@ function newEvent(attendee, startDate, endDate, organizer, location, callback) {
     );
 }
 
+// TODO: Convert to async/await
 function getTrainerEvents(trainerId, callback) {
   mdb
     .get()
@@ -36,20 +38,26 @@ function getTrainerEvents(trainerId, callback) {
 async function getTrainerEventsforFourWks(trainerId) {
   const curDate = new Date(new Date().setHours(0, 0, 0));
   const fourWks = addWeeks(curDate, 4);
-  const cursor = await mdb
-    .get()
-    .collection("events")
-    .find({
-      organizer: ObjectID(trainerId),
-      startDate: {
-        $gte: curDate,
-        $lt: fourWks,
-      },
-    });
-  const events = await cursor.toArray();
-  return events;
+
+  try {
+    const cursor = await mdb
+      .get()
+      .collection("events")
+      .find({
+        organizer: ObjectID(trainerId),
+        startDate: {
+          $gte: curDate,
+          $lt: fourWks,
+        },
+      });
+    const events = await cursor.toArray();
+    return events;
+  } catch (error) {
+    console.log("getTrainerEventsForFourWks Error");
+  }
 }
 
+// TODO: Convert to async/await
 function getClientEvents(clientId, callback) {
   mdb
     .get()
@@ -64,18 +72,23 @@ function getClientEvents(clientId, callback) {
 async function getClientEventsforFourWks(clientId) {
   const curDate = new Date(new Date().setHours(0, 0, 0));
   const fourWks = addWeeks(curDate, 4);
-  const cursor = await mdb
-    .get()
-    .collection("events")
-    .find({
-      attendee: ObjectID(clientId),
-      startDate: {
-        $gte: curDate,
-        $lt: fourWks,
-      },
-    });
-  const events = await cursor.toArray();
-  return events;
+
+  try {
+    const cursor = await mdb
+      .get()
+      .collection("events")
+      .find({
+        attendee: ObjectID(clientId),
+        startDate: {
+          $gte: curDate,
+          $lt: fourWks,
+        },
+      });
+    const events = await cursor.toArray();
+    return events;
+  } catch (error) {
+    console.log("getClientEventsForFourWks Error");
+  }
 }
 
 module.exports = {
