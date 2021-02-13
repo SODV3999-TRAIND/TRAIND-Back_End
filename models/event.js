@@ -1,4 +1,5 @@
 const { ObjectID } = require("mongodb");
+const baseError = require("../error");
 const mdb = require("./index");
 const addWeeks = require("date-fns/addWeeks");
 
@@ -42,7 +43,7 @@ async function getTrainerEventsforFourWks(trainerId) {
   try {
     if (!ObjectID.isValid(trainerId)) {
       // TODO: Added custom error handling for mal-formed ObjectID
-      throw error;
+      throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
     }
     const cursor = await mdb
       .get()
@@ -59,6 +60,7 @@ async function getTrainerEventsforFourWks(trainerId) {
   } catch (error) {
     // TODO: Add more robust error handling here.
     console.log("getTrainerEventsForFourWks Error");
+    throw error;
   }
 }
 
@@ -80,7 +82,7 @@ async function getClientEventsforFourWks(clientId) {
   try {
     if (!ObjectID.isValid(clientId)) {
       // TODO: Added custom error handling for mal-formed ObjectID
-      throw error;
+      throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
     }
     const cursor = await mdb
       .get()
@@ -97,6 +99,7 @@ async function getClientEventsforFourWks(clientId) {
   } catch (error) {
     // TODO: Add more robust error handling here.
     console.log("getClientEventsForFourWks Error");
+    throw error;
   }
 }
 
