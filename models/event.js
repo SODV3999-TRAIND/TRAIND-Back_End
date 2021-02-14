@@ -6,34 +6,42 @@ const addWeeks = require("date-fns/addWeeks");
 // TODO: Add express-validator.
 // TODO: Add code to pass db errors to the router.
 
-// TODO: Convert to async/await
-function newEvent(attendee, startDate, endDate, organizer, location, callback) {
-  mdb
-    .get()
-    .collection("events")
-    .insertOne(
-      {
-        // TODO: Add checking to make sure the organizer and attendee actually exist.
+async function newEvent(attendee, startDate, endDate, organizer, location) {
+  try {
+    if (!ObjectID.isValid(organizer) || !ObjectID.isValid(attendee)) {
+      throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
+    }
+    const event = await mdb
+      .get()
+      .collection("events")
+      .insertOne({
         organizer: ObjectID(organizer),
         attendee: ObjectID(attendee),
         // TODO: Add iso-datestring-validator for startDate and endDate
         startDate: startDate,
         endDate: endDate,
         location: location,
-      },
-      callback
-    );
+      });
+    return event;
+  } catch (error) {
+    throw error;
+  }
 }
 
-// TODO: Convert to async/await
-function getTrainerEvents(trainerId, callback) {
-  mdb
-    .get()
-    .collection("events")
-    .find({ organizer: ObjectID(trainerId) })
-    .toArray((err, events) => {
-      callback(err, events);
-    });
+async function getTrainerEvents(trainerId) {
+  try {
+    if (!ObjectID.isValid(trainerId)) {
+      throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
+    }
+    const events = await mdb
+      .get()
+      .collection("events")
+      .find({ organizer: ObjectID(trainerId) })
+      .toArray();
+    return events;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function getTrainerEventsforFourWks(trainerId) {
@@ -42,7 +50,6 @@ async function getTrainerEventsforFourWks(trainerId) {
 
   try {
     if (!ObjectID.isValid(trainerId)) {
-      // TODO: Added custom error handling for mal-formed ObjectID
       throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
     }
     const cursor = await mdb
@@ -64,15 +71,20 @@ async function getTrainerEventsforFourWks(trainerId) {
   }
 }
 
-// TODO: Convert to async/await
-function getClientEvents(clientId, callback) {
-  mdb
-    .get()
-    .collection("events")
-    .find({ attendee: ObjectID(clientId) })
-    .toArray((err, events) => {
-      callback(err, events);
-    });
+async function getClientEvents(clientId) {
+  try {
+    if (!ObjectID.isValid(clientId)) {
+      throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
+    }
+    const events = await mdb
+      .get()
+      .collection("events")
+      .find({ attendee: ObjectID(clientId) })
+      .toArray();
+    return events;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function getClientEventsforFourWks(clientId) {

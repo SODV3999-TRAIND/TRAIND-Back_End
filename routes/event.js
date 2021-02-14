@@ -3,76 +3,51 @@ const event = require("../models/event");
 
 const router = express.Router();
 
-router.post("/book", (req, res) => {
-  // TODO: Add next()
+router.post("/book", async (req, res) => {
   const { attendee, organizer, startDate, endDate, location } = req.body;
-  event.newEvent(
-    attendee,
-    startDate,
-    endDate,
-    organizer,
-    location,
-    (err, result) => {
-      if (err) {
-        // TODO: Add more robust error handling.
-        console.log("Error creating event");
-      } else {
-        res.send(`Event ID: ${result.insertedId}`);
-      }
-    }
-  );
+  try {
+    await event.newEvent(attendee, startDate, endDate, organizer, location);
+  } catch (error) {
+    res.status(error.httpCode).json({ message: error.message });
+  }
 });
 
-router.get("/trainer/:trainerId", (req, res) => {
+router.get("/trainer/:trainerId", async (req, res) => {
   const trainerId = req.params.trainerId;
-  event.getTrainerEvents(trainerId, (err, results) => {
-    if (err) {
-      // TODO: Add more robust error handling
-      console.log("Error getting trainer events");
-    } else {
-      res.json(results);
-    }
-  });
+  try {
+    const events = await event.getTrainerEvents(trainerId);
+    res.json(events);
+  } catch (error) {
+    res.status(error.httpCode).json({ message: error.message });
+  }
 });
 
 router.get("/trainer/:trainerId/fourWksSchedule", async (req, res) => {
   const trainerId = req.params.trainerId;
   try {
     const events = await event.getTrainerEventsforFourWks(trainerId);
-    if (events == null || events.length <= 0) {
-      res.send("No events");
-    } else {
-      res.json(events);
-    }
+    res.json(events);
   } catch (error) {
-    console.log("getTrainerEventsForFourWks Routing Error");
     res.status(error.httpCode).json({ message: error.message });
   }
 });
 
-router.get("/client/:clientId", (req, res) => {
+router.get("/client/:clientId", async (req, res) => {
   const clientId = req.params.clientId;
-  event.getClientEvents(clientId, (err, results) => {
-    if (err) {
-      // TODO: Add more robust error handling
-      console.log("Error getting client events");
-    } else {
-      res.json(results);
-    }
-  });
+  try {
+    const events = await event.getClientEvents(clientId);
+    res.json(events);
+  } catch (error) {
+    res.status(error.httpCode).json({ message: error.message });
+  }
 });
 
 router.get("/client/:clientId/fourWksSchedule", async (req, res) => {
   const clientId = req.params.clientId;
   try {
     const events = await event.getClientEventsforFourWks(clientId);
-    if (events == null || events.length <= 0) {
-      res.send("No events");
-    } else {
-      res.json(events);
-    }
+    res.json(events);
   } catch (error) {
-    console.log("getClientEventsForFourWks Routing Error");
     res.status(error.httpCode).json({ message: error.message });
   }
 });
