@@ -1,8 +1,18 @@
 const express = require("express");
+const multer = require("multer");
+const fs = require("fs");
 const client = require("../models/client");
 const httpErrors = require("http-errors");
 
 const router = express.Router();
+
+const storage = multer.diskStorage({
+  destination: (req, res, cb) => {
+    cb(null, "uploads/");
+  },
+});
+
+const upload = multer({ storage: storage });
 
 router.get("/:clientID", (req, res) => {
   // TODO: Add back next() call.
@@ -13,20 +23,22 @@ router.get("/:clientID", (req, res) => {
     } else if (!result) {
       res.send("Client Not Found");
     } else {
-      res.send(`Client First Name: ${result.givenName}`);
+      res.json(result);
     }
   });
 });
 
-router.post("/", (req, res) => {
+router.post("/", upload.single("data"), (req, res) => {
   // TODO: Add back next() call
-  const { lastName, firstName, telephone, email } = req.body;
+  const { familyName, givenName, telephone, email } = req.body;
+  const data = fs.readFileSync(req.file.path);
 
   client.newClient(
-    firstName,
-    lastName,
+    givenName,
+    familyName,
     email,
     telephone,
+    data,
     function (error, result) {
       if (error) {
         // TODO: Add more robust error handling here. Consider using next() to provide info back to React.
