@@ -2,6 +2,7 @@ const { ObjectID } = require("mongodb");
 const baseError = require("../error");
 const mdb = require("./index");
 const addWeeks = require("date-fns/addWeeks");
+const { isValidISODateString } = require("iso-datestring-validator");
 
 // TODO: Add express-validator.
 // TODO: Add code to pass db errors to the router.
@@ -10,6 +11,9 @@ async function newEvent(attendee, startDate, endDate, organizer, location) {
   try {
     if (!ObjectID.isValid(organizer) || !ObjectID.isValid(attendee)) {
       throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
+    }
+    if (!isValidISODateString(startDate) || !isValidISODateString(endDate)) {
+      throw new baseError("castErrorDB", 400, "Malformed Date", true);
     }
     const event = await mdb
       .get()
