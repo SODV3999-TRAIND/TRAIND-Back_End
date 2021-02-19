@@ -6,8 +6,9 @@ const router = require("./routes");
 
 const port = 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello Express");
+app.get("/test", (req, res) => {
+  console.log("/test called");
+  res.json({ reply: "Hello from Express" });
 });
 
 app.use(bodyParser.json());
