@@ -118,7 +118,7 @@ async function getClientEventsforFourWks(clientId) {
   }
 }
 
-async function validateTrainerAvailability(trainerId, startDate, endDate) {
+async function isTrainerAvailabe(trainerId, startDate, endDate) {
   try {
     if (!ObjectID.isValid(trainerId)) {
       throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
@@ -131,6 +131,11 @@ async function validateTrainerAvailability(trainerId, startDate, endDate) {
         startDate: { $gte: startDate, $lte: endDate },
         endDate: { $gte: endDate, $lte: endDate },
       });
+    if (events != null) {
+      return false;
+    } else {
+      return true;
+    }
   } catch (error) {
     throw error;
   }
@@ -142,4 +147,5 @@ module.exports = {
   getClientEvents,
   getClientEventsforFourWks,
   getTrainerEventsforFourWks,
+  isTrainerAvailabe,
 };
