@@ -26,4 +26,26 @@ function getClient(clientID, callback) {
     .findOne({ _id: ObjectID(clientID) }, callback);
 }
 
+async function checkNewClientIsUnique(givenName, familyName, telephone, email) {
+  try {
+    // TODO: Add input validation before Mongo call.
+    if (
+      (await mdb
+        .get()
+        .collection("clients")
+        .find({
+          givenName: givenName,
+          familyName: familyName,
+          telephone: telephone,
+          email: email,
+        })
+        .limit(1)) == null
+    ) {
+      return true;
+    } else {
+      return false;
+    }
+  } catch (error) {}
+}
+
 module.exports = { getClient, newClient };
