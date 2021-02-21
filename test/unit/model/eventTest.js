@@ -1,24 +1,27 @@
 const { assert, expect } = require("chai");
-const testDbHelper = require("../../testDbHelper");
+const { ObjectID } = require("mongodb");
 const event = require("../../../models/event");
-const dbHelper = new testDbHelper();
+const dbServer = require("../../../models/index");
 
 suiteSetup(async function () {
-  await dbHelper.start();
+  await dbServer.start("test");
 });
 
 suiteTeardown(async function () {
-  dbHelper.stop();
+  dbServer.stop();
 });
 
 teardown(async function () {
-  await dbHelper.cleanup();
+  await dbServer.cleanup();
 });
 
 suite("Event Validation", function () {
   test("should return one event with a start date and time of Feb 16, 2021", async function () {
     await createEventCollection();
-    assert.equal(await dbHelper.db.collection("events").countDocuments({}), 4);
+    assert.equal(
+      await dbServer.get().collection("events").countDocuments({}),
+      4
+    );
   });
 
   test("should return a single event", async function () {
@@ -33,9 +36,9 @@ suite("Event Validation", function () {
 });
 
 async function createEventCollection() {
-  const event1 = await dbHelper.createDoc("events", {
-    attendee: "6020b6eafc13ae32b1000000",
-    organizer: "6020b637fc13ae4ce1000000",
+  const event1 = await dbServer.createDoc("events", {
+    attendee: ObjectID("6020b6eafc13ae32b1000000"),
+    organizer: ObjectID("6020b637fc13ae4ce1000000"),
     startDate: "2021-02-09T15:03:36Z",
     endDate: "2021-02-09T17:03:36Z",
     location: {
@@ -44,33 +47,33 @@ async function createEventCollection() {
     },
   });
 
-  const event2 = await dbHelper.createDoc("events", {
-    attendee: "6020b6eafc13ae32b1000000",
+  const event2 = await dbServer.createDoc("events", {
+    attendee: ObjectID("6020b6eafc13ae32b1000000"),
     startDate: "2020-09-28T16:05:26.000Z",
     endDate: "2020-09-28T16:39:26.000Z",
-    organizer: "6020b637fc13ae4ce1000000",
+    organizer: ObjectID("6020b637fc13ae4ce1000000"),
     location: {
       latitude: 22.6285798,
       longitude: 90.2690466,
     },
   });
 
-  const event3 = await dbHelper.createDoc("events", {
-    attendee: "6020b6eafc13ae32b1000001",
+  const event3 = await dbServer.createDoc("events", {
+    attendee: ObjectID("6020b6eafc13ae32b1000001"),
     startDate: "2020-03-07T03:11:05.000Z",
     endDate: "2020-03-07T03:56:05.000Z",
-    organizer: "6020b637fc13ae4ce1000001",
+    organizer: ObjectID("6020b637fc13ae4ce1000001"),
     location: {
       latitude: 56.359356,
       longitude: 61.8768972,
     },
   });
 
-  const event4 = await dbHelper.createDoc("events", {
-    attendee: "6020b6eafc13ae32b1000002",
+  const event4 = await dbServer.createDoc("events", {
+    attendee: ObjectID("6020b6eafc13ae32b1000002"),
     startDate: "2020-03-07T03:11:05.000Z",
     endDate: "2020-03-07T03:56:05.000Z",
-    organizer: "6020b637fc13ae4ce1000002",
+    organizer: ObjectID("6020b637fc13ae4ce1000002"),
     location: {
       latitude: 56.359356,
       longitude: 61.8768972,
