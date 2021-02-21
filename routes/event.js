@@ -6,6 +6,7 @@ const router = express.Router();
 router.post("/book", async (req, res) => {
   const { attendee, organizer, startDate, endDate, location } = req.body;
   try {
+    // TODO: Return the event id to client.
     await event.newEvent(attendee, startDate, endDate, organizer, location);
   } catch (error) {
     res.status(error.httpCode).json({ message: error.message });

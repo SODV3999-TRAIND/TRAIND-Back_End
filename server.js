@@ -1,7 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-const dbServer = require("./models/index");
+const dbServer = require("./models/dbServer");
 
+//TODO: Add flags for production.
 if (process.env.NODE_ENV == "development") {
   dbServer.start();
 }

@@ -1,5 +1,5 @@
 const { ObjectID, Binary } = require("mongodb");
-const dbServer = require("./index");
+const dbServer = require("./dbServer");
 // TODO: Add express-validator.
 // TODO: Add code to pass db errors to the router.
 

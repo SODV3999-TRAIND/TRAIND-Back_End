@@ -1,6 +1,6 @@
 const { ObjectID } = require("mongodb");
 const baseError = require("../error");
-const dbServer = require("./index");
+const dbServer = require("./dbServer");
 const addWeeks = require("date-fns/addWeeks");
 const { isValidISODateString } = require("iso-datestring-validator");
 
