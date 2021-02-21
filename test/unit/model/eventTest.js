@@ -1,7 +1,7 @@
 const { assert, expect } = require("chai");
 const { ObjectID } = require("mongodb");
 const event = require("../../../models/event");
-const dbServer = require("../../../models/index");
+const dbServer = require("../../../models/dbServer");
 
 suiteSetup(async function () {
   await dbServer.start("test");

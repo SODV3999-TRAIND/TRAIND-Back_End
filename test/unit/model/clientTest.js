@@ -1,6 +1,6 @@
 const { assert, expect } = require("chai");
 const client = require("../../../models/client");
-const dbServer = require("../../../models/index");
+const dbServer = require("../../../models/dbServer");
 
 suiteSetup(async function () {
   await dbServer.start("test");
