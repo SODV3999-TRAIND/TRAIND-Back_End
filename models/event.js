@@ -1,6 +1,6 @@
 const { ObjectID } = require("mongodb");
 const baseError = require("../error");
-const mdb = require("./index");
+const dbServer = require("./index");
 const addWeeks = require("date-fns/addWeeks");
 const { isValidISODateString } = require("iso-datestring-validator");
 
@@ -15,12 +15,13 @@ async function newEvent(attendee, startDate, endDate, organizer, location) {
     if (!isValidISODateString(startDate) || !isValidISODateString(endDate)) {
       throw new baseError("castErrorDB", 400, "Malformed Date", true);
     }
-    const event = await mdb
+    const event = await dbServer
       .get()
       .collection("events")
       .insertOne({
         organizer: ObjectID(organizer),
         attendee: ObjectID(attendee),
+        // TODO: Convert startDate to ISODate before saving to the dB.
         startDate: startDate,
         endDate: endDate,
         location: location,
@@ -36,7 +37,7 @@ async function getTrainerEvents(trainerId) {
     if (!ObjectID.isValid(trainerId)) {
       throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
     }
-    const events = await mdb
+    const events = await dbServer
       .get()
       .collection("events")
       .find({ organizer: ObjectID(trainerId) })
@@ -55,7 +56,7 @@ async function getTrainerEventsforFourWks(trainerId) {
     if (!ObjectID.isValid(trainerId)) {
       throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
     }
-    const cursor = await mdb
+    const cursor = await dbServer
       .get()
       .collection("events")
       .find({
@@ -79,7 +80,7 @@ async function getClientEvents(clientId) {
     if (!ObjectID.isValid(clientId)) {
       throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
     }
-    const events = await mdb
+    const events = await dbServer
       .get()
       .collection("events")
       .find({ attendee: ObjectID(clientId) })
@@ -99,7 +100,7 @@ async function getClientEventsforFourWks(clientId) {
       // TODO: Added custom error handling for mal-formed ObjectID
       throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
     }
-    const cursor = await mdb
+    const cursor = await dbServer
       .get()
       .collection("events")
       .find({
@@ -123,7 +124,7 @@ async function isTrainerAvailabe(trainerId, startDate, endDate) {
     if (!ObjectID.isValid(trainerId)) {
       throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
     }
-    const events = await mdb
+    const events = await dbServer
       .get()
       .collection("events")
       .find({
