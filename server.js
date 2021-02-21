@@ -1,5 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+const dbServer = require("./models/index");
+
+if (process.env.NODE_ENV == "development") {
+  dbServer.start();
+}
 
 const app = express();
 const router = require("./routes");
