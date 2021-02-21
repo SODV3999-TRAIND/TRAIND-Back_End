@@ -1,10 +1,10 @@
 const { ObjectID, Binary } = require("mongodb");
-const mdb = require("./index");
+const dbServer = require("./index");
 // TODO: Add express-validator.
 // TODO: Add code to pass db errors to the router.
 
 function newClient(givenName, familyName, email, telephone, data, callback) {
-  mdb
+  dbServer
     .get()
     .collection("clients")
     .insertOne(
@@ -20,7 +20,7 @@ function newClient(givenName, familyName, email, telephone, data, callback) {
 }
 
 function getClient(clientID, callback) {
-  mdb
+  dbServer
     .get()
     .collection("clients")
     .findOne({ _id: ObjectID(clientID) }, callback);
@@ -29,18 +29,16 @@ function getClient(clientID, callback) {
 async function checkNewClientIsUnique(givenName, familyName, telephone, email) {
   try {
     // TODO: Add input validation before Mongo call.
-    if (
-      (await mdb
-        .get()
-        .collection("clients")
-        .find({
-          givenName: givenName,
-          familyName: familyName,
-          telephone: telephone,
-          email: email,
-        })
-        .limit(1)) == null
-    ) {
+    const count = await dbServer.get().collection("clients").countDocuments(
+      {
+        givenName: givenName,
+        familyName: familyName,
+        telephone: telephone,
+        email: email,
+      },
+      { limit: 1 }
+    );
+    if (count == 0) {
       return true;
     } else {
       return false;
@@ -48,4 +46,4 @@ async function checkNewClientIsUnique(givenName, familyName, telephone, email) {
   } catch (error) {}
 }
 
-module.exports = { getClient, newClient };
+module.exports = { getClient, newClient, checkNewClientIsUnique };
