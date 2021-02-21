@@ -23,3 +23,10 @@ Errors are created at the callback and propogated up to server.js using next(err
 ## Database
 
 The connection to the database is via the MongoDB Client.
+
+## Testing
+
+Testing is done using Mocha and Chai.
+
+For testing an in-memory database is created. To trigger the in-memory database set the NODE_ENV = "test".
+The in-memory db is populated with data saved within the test files.
