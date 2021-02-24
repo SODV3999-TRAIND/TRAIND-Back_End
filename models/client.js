@@ -4,21 +4,6 @@ const dbServer = require("./dbServer");
 // TODO: Add express-validator.
 // TODO: Add code to pass db errors to the router.
 
-function newClient(givenName, familyName, email, telephone, data, callback) {
-  dbServer
-    .get()
-    .collection("clients")
-    .insertOne(
-      {
-        givenName: givenName,
-        familyName: familyName,
-        email: email,
-        telephone: telephone,
-        image: { data: Binary(data), contentType: "image/jpeg" },
-      },
-      callback
-    );
-}
 /**
  * Returns client information associated with provide client _id
  * @param {string} clientID
@@ -35,6 +20,35 @@ async function getClient(clientID) {
       .collection("clients")
       .findOne({ _id: ObjectID(clientID) });
     return client;
+  } catch (error) {
+    throw error;
+  }
+}
+
+/**
+ *Adds new client to the MongoDB.
+ * @param {string} givenName
+ * @param {string} familyName
+ * @param {string} email
+ * @param {string} telephone
+ * @param {binary} data
+ * @returns {string} client _id
+ * @throws {error} if insert fails
+ */
+async function newClient(givenName, familyName, email, telephone, data) {
+  // TODO: Need to make the data optional.
+  try {
+    const client = await dbServer
+      .get()
+      .collection("clients")
+      .insertOne({
+        givenName: givenName,
+        familyName: familyName,
+        email: email,
+        telephone: telephone,
+        image: { data: Binary(data), contentType: "image/jpeg" },
+      });
+    return client._id;
   } catch (error) {
     throw error;
   }
