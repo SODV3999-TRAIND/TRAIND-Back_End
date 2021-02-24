@@ -1,4 +1,5 @@
 const { assert, expect } = require("chai");
+const BaseError = require("../../../error");
 const client = require("../../../models/client");
 const dbServer = require("../../../models/dbServer");
 
@@ -35,6 +36,21 @@ suite("Client Schema", function () {
       "m.persson891@mybvc.ca"
     );
     assert.isTrue(result);
+  });
+
+  test("should throw a 400 error when a malformed ObjectId is provided", async function () {
+    try {
+      await client.getClient("6020b6eafc13ae32b100000");
+    } catch (error) {
+      assert.instanceOf(error, BaseError, "Incorrect error type");
+      assert.equal(error.name, "castErrorDB", "Incorrect error name");
+      assert.equal(error.httpCode, 400, "Incorrect httpCode");
+      assert.equal(
+        error.message,
+        "Malformed ObjectID",
+        "Incorrect error message"
+      );
+    }
   });
 });
 
