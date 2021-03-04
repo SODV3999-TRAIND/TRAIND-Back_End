@@ -35,3 +35,5 @@ app.use((err, req, res, next) => {
 app.listen(port, () => {
   console.log(`Express is listening of port ${port}`);
 });
+
+module.exports = app;
