@@ -43,14 +43,21 @@ router.get("/client/:clientId", async (req, res) => {
   }
 });
 
-router.get("/client/:clientId/fourWksSchedule", async (req, res) => {
+router.get("/client/:clientId/schedule", async (req, res) => {
   const clientId = req.params.clientId;
-  try {
-    const events = await event.getClientEventsforFourWks(clientId);
-    res.json(events);
-  } catch (error) {
-    res.status(error.httpCode).json({ message: error.message });
-  }
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+
+  res.status(200).json({ message: "All Good" });
+
+  // TODO: Add validation for path and query parameters.
+
+  // try {
+  //   const events = await event.getClientEventsforFourWks(clientId);
+  //   res.json(events);
+  // } catch (error) {
+  //   res.status(error.httpCode).json({ message: error.message });
+  // }
 });
 
 module.exports = router;
