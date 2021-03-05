@@ -1,5 +1,7 @@
 const express = require("express");
 const event = require("../models/event");
+const { isValidISODateString } = require("iso-datestring-validator");
+const baseError = require("../error");
 
 const router = express.Router();
 
@@ -23,11 +25,22 @@ router.get("/trainer/:trainerId", async (req, res) => {
   }
 });
 
-router.get("/trainer/:trainerId/fourWksSchedule", async (req, res) => {
+router.get("/trainer/:trainerId/schedule", async (req, res) => {
   const trainerId = req.params.trainerId;
+  const startDate = req.query.startDate;
+  const endDate = req.query.endDate;
+
   try {
+    if (!isValidISODateString(startDate) || !isValidISODateString(endDate)) {
+      throw new baseError(
+        "validationErrorAPI",
+        400,
+        "Malformed Date String",
+        true
+      );
+    }
     const events = await event.getTrainerEventsforFourWks(trainerId);
-    res.json(events);
+    res.status(200).json(events);
   } catch (error) {
     res.status(error.httpCode).json({ message: error.message });
   }
@@ -48,16 +61,20 @@ router.get("/client/:clientId/schedule", async (req, res) => {
   const startDate = req.query.startDate;
   const endDate = req.query.endDate;
 
-  res.status(200).json({ message: "All Good" });
-
-  // TODO: Add validation for path and query parameters.
-
-  // try {
-  //   const events = await event.getClientEventsforFourWks(clientId);
-  //   res.json(events);
-  // } catch (error) {
-  //   res.status(error.httpCode).json({ message: error.message });
-  // }
+  try {
+    if (!isValidISODateString(startDate) || !isValidISODateString(endDate)) {
+      throw new baseError(
+        "validationErrorAPI",
+        400,
+        "Malformed Date String",
+        true
+      );
+    }
+    const events = await event.getClientEventsforFourWks(clientId);
+    res.status(200).json(events);
+  } catch (error) {
+    res.status(error.httpCode).json({ message: error.message });
+  }
 });
 
 module.exports = router;
