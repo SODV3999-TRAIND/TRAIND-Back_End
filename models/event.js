@@ -48,6 +48,38 @@ async function getTrainerEvents(trainerId) {
   }
 }
 
+async function getTrainerSchedule(trainerId, startDate, endDate) {
+  try {
+    if (!ObjectID.isValid(trainerId)) {
+      throw new baseError("castErrorDB", 400, "Malformed ObjectId", true);
+    }
+
+    const events = await dbServer
+      .get()
+      .collection("events")
+      .find({
+        $and: [
+          { attendee: ObjectID(trainerId) },
+          {
+            $or: [
+              {
+                $and: [
+                  { startDate: { $gte: startDate } },
+                  { startDate: { $lte: endDate } },
+                ],
+              },
+              { startDate: { $lte: startDate }, endDate: { $gte: startDate } },
+            ],
+          },
+        ],
+      })
+      .toArray();
+    return events;
+  } catch (error) {
+    throw error;
+  }
+}
+
 async function getClientEvents(clientId) {
   try {
     if (!ObjectID.isValid(clientId)) {
@@ -122,7 +154,8 @@ async function isTrainerAvailabe(trainerId, startDate, endDate) {
 module.exports = {
   newEvent,
   getTrainerEvents,
+  getTrainerSchedule,
   getClientEvents,
-  isTrainerAvailabe,
   getClientSchedule,
+  isTrainerAvailabe,
 };
