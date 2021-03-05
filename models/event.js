@@ -48,33 +48,6 @@ async function getTrainerEvents(trainerId) {
   }
 }
 
-async function getTrainerEventsforFourWks(trainerId) {
-  const curDate = new Date(new Date().setHours(0, 0, 0));
-  const fourWks = addWeeks(curDate, 4);
-
-  try {
-    if (!ObjectID.isValid(trainerId)) {
-      throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
-    }
-    const cursor = await dbServer
-      .get()
-      .collection("events")
-      .find({
-        organizer: ObjectID(trainerId),
-        startDate: {
-          $gte: curDate,
-          $lt: fourWks,
-        },
-      });
-    const events = await cursor.toArray();
-    return events;
-  } catch (error) {
-    // TODO: Add more robust error handling here.
-    console.log("getTrainerEventsForFourWks Error");
-    throw error;
-  }
-}
-
 async function getClientEvents(clientId) {
   try {
     if (!ObjectID.isValid(clientId)) {
@@ -91,34 +64,6 @@ async function getClientEvents(clientId) {
   }
 }
 
-async function getClientEventsforFourWks(clientId) {
-  const curDate = new Date(new Date().setHours(0, 0, 0));
-  const fourWks = addWeeks(curDate, 4);
-
-  try {
-    if (!ObjectID.isValid(clientId)) {
-      // TODO: Added custom error handling for mal-formed ObjectID
-      throw new baseError("castErrorDB", 400, "Malformed ObjectID", true);
-    }
-    const cursor = await dbServer
-      .get()
-      .collection("events")
-      .find({
-        attendee: ObjectID(clientId),
-        startDate: {
-          $gte: curDate,
-          $lt: fourWks,
-        },
-      });
-    const events = await cursor.toArray();
-    return events;
-  } catch (error) {
-    // TODO: Add more robust error handling here.
-    console.log("getClientEventsForFourWks Error");
-    throw error;
-  }
-}
-
 async function getClientSchedule(clientId, startDate, endDate) {
   try {
     if (!ObjectID.isValid(clientId)) {
@@ -130,7 +75,7 @@ async function getClientSchedule(clientId, startDate, endDate) {
       .collection("events")
       .find({
         $and: [
-          { organizer: ObjectID(clientId) },
+          { attendee: ObjectID(clientId) },
           {
             $or: [
               {
@@ -138,14 +83,17 @@ async function getClientSchedule(clientId, startDate, endDate) {
                   { startDate: { $gte: startDate } },
                   { startDate: { $lte: endDate } },
                 ],
-                // TODO: I think I am missing the events that start before, but end inside, and the events that start inside, but end after.
               },
               { startDate: { $lte: startDate }, endDate: { $gte: startDate } },
             ],
           },
         ],
-      });
-  } catch (error) {}
+      })
+      .toArray();
+    return events;
+  } catch (error) {
+    throw error;
+  }
 }
 
 async function isTrainerAvailabe(trainerId, startDate, endDate) {
@@ -175,7 +123,6 @@ module.exports = {
   newEvent,
   getTrainerEvents,
   getClientEvents,
-  getClientEventsforFourWks,
-  getTrainerEventsforFourWks,
   isTrainerAvailabe,
+  getClientSchedule,
 };
