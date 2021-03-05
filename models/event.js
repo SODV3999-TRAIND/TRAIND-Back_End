@@ -119,6 +119,35 @@ async function getClientEventsforFourWks(clientId) {
   }
 }
 
+async function getClientSchedule(clientId, startDate, endDate) {
+  try {
+    if (!ObjectID.isValid(clientId)) {
+      throw new baseError("castErrorDB", 400, "Malformed ObjectId", true);
+    }
+
+    const events = await dbServer
+      .get()
+      .collection("events")
+      .find({
+        $and: [
+          { organizer: ObjectID(clientId) },
+          {
+            $or: [
+              {
+                $and: [
+                  { startDate: { $gte: startDate } },
+                  { startDate: { $lte: endDate } },
+                ],
+                // TODO: I think I am missing the events that start before, but end inside, and the events that start inside, but end after.
+              },
+              { startDate: { $lte: startDate }, endDate: { $gte: startDate } },
+            ],
+          },
+        ],
+      });
+  } catch (error) {}
+}
+
 async function isTrainerAvailabe(trainerId, startDate, endDate) {
   try {
     if (!ObjectID.isValid(trainerId)) {
