@@ -19,7 +19,7 @@ app.get("/test", (req, res) => {
 
 app.use(bodyParser.json());
 
-app.use("/router", router);
+app.use("/api", router);
 
 app.all("*", (req, res, next) => {
   // TODO: Look at adding custom error handling here.
