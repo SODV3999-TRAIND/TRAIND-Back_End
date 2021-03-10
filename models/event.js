@@ -49,6 +49,8 @@ async function getTrainerEvents(trainerId) {
 }
 
 async function getTrainerSchedule(trainerId, startDate, endDate) {
+  const startD = new Date(startDate);
+  const endD = new Date(endDate);
   try {
     if (!ObjectID.isValid(trainerId)) {
       throw new baseError("castErrorDB", 400, "Malformed ObjectId", true);
@@ -59,16 +61,16 @@ async function getTrainerSchedule(trainerId, startDate, endDate) {
       .collection("events")
       .find({
         $and: [
-          { attendee: ObjectID(trainerId) },
+          { organizer: ObjectID(trainerId) },
           {
             $or: [
               {
                 $and: [
-                  { startDate: { $gte: startDate } },
-                  { startDate: { $lte: endDate } },
+                  { startDate: { $gte: startD } },
+                  { startDate: { $lte: endD } },
                 ],
               },
-              { startDate: { $lte: startDate }, endDate: { $gte: startDate } },
+              { startDate: { $lte: startD }, endDate: { $gte: startD } },
             ],
           },
         ],
@@ -97,6 +99,8 @@ async function getClientEvents(clientId) {
 }
 
 async function getClientSchedule(clientId, startDate, endDate) {
+  const startD = new Date(startDate);
+  const endD = new Date(endDate);
   try {
     if (!ObjectID.isValid(clientId)) {
       throw new baseError("castErrorDB", 400, "Malformed ObjectId", true);
@@ -112,11 +116,11 @@ async function getClientSchedule(clientId, startDate, endDate) {
             $or: [
               {
                 $and: [
-                  { startDate: { $gte: startDate } },
-                  { startDate: { $lte: endDate } },
+                  { startDate: { $gte: startD } },
+                  { startDate: { $lte: endD } },
                 ],
               },
-              { startDate: { $lte: startDate }, endDate: { $gte: startDate } },
+              { startDate: { $lte: startD }, endDate: { $gte: startD } },
             ],
           },
         ],
