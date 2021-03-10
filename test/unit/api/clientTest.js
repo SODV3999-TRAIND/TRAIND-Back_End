@@ -23,7 +23,7 @@ suite("/client", function () {
     test("when provided with a non-existant client ID, should return a 404 error", function (done) {
       chai
         .request(app)
-        .get("/router/client/6020b6eafc13ae32b1000110")
+        .get("/api/client/6020b6eafc13ae32b1000110")
         .end(function (err, res) {
           res.should.have.status(404);
           done(err);
@@ -34,7 +34,7 @@ suite("/client", function () {
     test("when provided with a malformed client ID, should return a 400 error", function (done) {
       chai
         .request(app)
-        .get("/router/client/6020b6eafc13ae32b100010")
+        .get("/api/client/6020b6eafc13ae32b100010")
         .end(function (err, res) {
           res.should.have.status(400);
           done(err);
