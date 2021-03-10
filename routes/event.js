@@ -70,7 +70,7 @@ router.get("/client/:clientId/schedule", async (req, res) => {
         true
       );
     }
-    const events = await event.getClientEventsforFourWks(clientId);
+    const events = await event.getClientSchedule(clientId, startDate, endDate);
     res.status(200).json(events);
   } catch (error) {
     res.status(error.httpCode).json({ message: error.message });
